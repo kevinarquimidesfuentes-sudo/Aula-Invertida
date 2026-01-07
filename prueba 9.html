@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador Aula Invertida AI | Generador de Prompts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(to right, #4F46E5, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <nav class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎓</span>
+                    <h1 class="text-xl font-bold text-slate-800 tracking-tight">EduPlan<span class="text-indigo-600">AI</span></h1>
+                </div>
+                <div class="text-sm text-slate-500 hidden sm:block">Aula Invertida Generator</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-3xl mx-auto px-4 py-10 w-full">
+        
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Planificaciones en <span class="gradient-text">un solo clic</span></h2>
+            <p class="text-slate-600 text-lg">Genera el prompt perfecto para ChatGPT o Gemini y obtén tu planificación de Aula Invertida al instante.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-cyan-400"></div>
+            
+            <form id="planForm" class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nivel Educativo</label>
+                        <select id="grado" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-slate-50 cursor-pointer" required>
+                            <option value="" disabled selected>Selecciona el grado...</option>
+                            <optgroup label="Primaria">
+                                <option value="1º Grado Primaria">1º Grado Primaria</option>
+                                <option value="2º Grado Primaria">2º Grado Primaria</option>
+                                <option value="3º Grado Primaria">3º Grado Primaria</option>
+                                <option value="4º Grado Primaria">4º Grado Primaria</option>
+                                <option value="5º Grado Primaria">5º Grado Primaria</option>
+                                <option value="6º Grado Primaria">6º Grado Primaria</option>
+                            </optgroup>
+                            <optgroup label="Secundaria">
+                                <option value="1º Año Secundaria">1º Año Secundaria (7º)</option>
+                                <option value="2º Año Secundaria">2º Año Secundaria (8º)</option>
+                                <option value="3º Año Secundaria">3º Año Secundaria (9º)</option>
+                            </optgroup>
+                            <optgroup label="Bachillerato">
+                                <option value="1º Año Bachillerato">1º Año Bachillerato</option>
+                                <option value="2º Año Bachillerato">2º Año Bachillerato</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Materia / Asignatura</label>
+                        <input type="text" id="materia" placeholder="Ej: Matemáticas, Ciencias..." class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-slate-50" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Tema Específico</label>
+                        <input type="text" id="tema" placeholder="Ej: El Ciclo del Agua, Ecuaciones Lineales..." class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-slate-50" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Duración Clase</label>
+                        <input type="text" id="tiempo" placeholder="Ej: 90 min" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-slate-50" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl flex justify-center items-center gap-2 text-lg">
+                    <span>✨ Generar Prompt de Planificación</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="resultSection" class="hidden mt-8 fade-in">
+            <div class="flex justify-between items-end mb-4">
+                <h3 class="text-xl font-bold text-slate-800">🚀 Tu Prompt está listo</h3>
+                <span class="text-xs font-medium bg-green-100 text-green-700 px-3 py-1 rounded-full">Optimizado para AI</span>
+            </div>
+            
+            <div class="bg-slate-900 rounded-xl p-6 shadow-2xl relative group">
+                <button onclick="copyToClipboard()" id="copyBtn" class="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    Copiar Prompt
+                </button>
+
+                <pre id="promptOutput" class="text-slate-300 font-mono text-sm whitespace-pre-wrap overflow-y-auto max-h-96 pr-2 custom-scrollbar leading-relaxed"></pre>
+            </div>
+            
+            <p class="text-center text-slate-500 text-sm mt-4">Pega este texto en ChatGPT, Claude o Gemini para obtener tu planificación completa.</p>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>© 2024 EduPlanAI. Herramienta diseñada para docentes innovadores.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('planForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 1. Capturar datos
+            const grado = document.getElementById('grado').value;
+            const materia = document.getElementById('materia').value;
+            const tema = document.getElementById('tema').value;
+            const tiempo = document.getElementById('tiempo').value;
+
+            // 2. Construir el Prompt Maestro (Ingeniería de Prompt Pedagógico)
+            const promptText = `Actúa como un desarrollador curricular experto y planifica una clase bajo la metodología de AULA INVERTIDA (Flipped Classroom).
+            
+DATOS DE LA CLASE:
+- Grado: ${grado}
+- Materia: ${materia}
+- Tema: ${tema}
+- Tiempo total: ${tiempo}
+
+INSTRUCCIONES:
+Genera una planificación detallada, estructurada y con tono motivador que incluya OBLIGATORIAMENTE las siguientes secciones numeradas:
+
+1. 🧠 REFLEXIÓN INICIAL: Una frase breve o pregunta poderosa relacionada con el tema para despertar curiosidad.
+
+2. 🎯 OBJETIVOS:
+   - Indicadores de logro (Redactados en tercera persona).
+   - Criterios de evaluación (Claros y medibles).
+
+3. 🧪 DIAGNÓSTICO DEL TEMA (Evaluación diagnóstica):
+   - Crea un Test de 5 preguntas de selección múltiple con sus respuestas correctas marcadas.
+
+4. 🏠 PRE-SABER (Actividades en Casa - Antes de la clase):
+   - Sugiere 1 video educativo específico (Título de búsqueda sugerido en YouTube).
+   - Sugiere 2 ideas de juegos online o simuladores interactivos.
+   - Describe 2 imágenes que el estudiante debería buscar o analizar.
+   - Detalla 3 actividades concretas para realizar en casa basadas en estos recursos.
+
+5. 🚀 INICIO DEL TEMA (En el aula - Activación):
+   - Una introducción atractiva (Hook) adecuada para ${grado}.
+   - Una dinámica rápida para activar conocimientos previos.
+
+6. 📚 DESARROLLO DEL TEMA (En el aula - Construcción):
+   - Explicación teórica clara, estructurada y profunda.
+   - Ejemplos aplicados al contexto real del estudiante.
+   - 3 Actividades Prácticas en el aula (Trabajo colaborativo o individual).
+   - Estrategia de GAMIFICACIÓN: Describe una mecánica de juego para aplicar durante la clase.
+
+7. ✅ CIERRE Y EVALUACIÓN (En el aula - Consolidación):
+   - Test de salida de 5 preguntas (diferentes a las del inicio) para verificar comprensión.
+   - Feedback/Retroalimentación básica para el docente.
+
+8. 🛠️ RECURSOS: Lista de materiales necesarios.
+
+FORMATO DE SALIDA:
+Usa Markdown, negritas para resaltar conceptos clave, emojis para hacer la lectura amena y una estructura visual limpia.`;
+
+            // 3. Mostrar Resultado
+            const outputElement = document.getElementById('promptOutput');
+            const resultSection = document.getElementById('resultSection');
+            
+            // Simular efecto de escritura
+            outputElement.textContent = promptText;
+            resultSection.classList.remove('hidden');
+            
+            // Scroll suave hacia el resultado
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Función de Copiado
+        function copyToClipboard() {
+            const text = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.innerHTML;
+                
+                // Feedback visual de éxito
+                btn.classList.remove('bg-white/10', 'text-white');
+                btn.classList.add('bg-green-500', 'text-white', 'border-green-500');
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    ¡Copiado!
+                `;
+
+                // Revertir después de 2 segundos
+                setTimeout(() => {
+                    btn.classList.add('bg-white/10', 'text-white');
+                    btn.classList.remove('bg-green-500', 'border-green-500');
+                    btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    Copiar Prompt
+                    `;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
